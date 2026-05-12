@@ -1,0 +1,32 @@
+# macOS
+.DS_Store
+
+# Android Studio
+.idea/
+*.iml
+
+# Gradle
+.gradle/
+build/
+local.properties
+
+# Kotlin
+.kotlin/
+
+# Generated
+captures/
+.externalNativeBuild/
+.cxx/
+
+# Signing
+*.jks
+*.keystore
+
+# Secrets
+secrets.properties
+
+# Logs
+*.log
+
+# OS
+Thumbs.db
