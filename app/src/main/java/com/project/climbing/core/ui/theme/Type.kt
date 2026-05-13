@@ -1,4 +1,4 @@
-package com.project.climbing.ui.theme
+package com.project.climbing.core.ui.theme
 
 import androidx.compose.material3.Typography
 import androidx.compose.ui.text.TextStyle
