@@ -12,6 +12,7 @@ import androidx.compose.material3.Scaffold
 import androidx.navigation.compose.rememberNavController
 import com.project.climbing.navigation.AppNavGraph
 import com.project.climbing.core.ui.theme.ClimbingTheme
+import androidx.compose.ui.Modifier
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
