@@ -1,4 +1,17 @@
 package com.project.climbing.navigation
 
-class Route {
+import kotlinx.serialization.Serializable
+
+sealed interface Route {
+    @Serializable
+    data object Login : Route
+
+    @Serializable
+    data object Home : Route
+
+    @Serializable
+    data object Gym : Route
+
+    @Serializable
+    data object Profile : Route
 }
