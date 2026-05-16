@@ -8,11 +8,13 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginViewModel @Inject constructor() : ViewModel() {
-    private val _uiState = MutableStateFlow(LoginUiState())
-    val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
+class LoginViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private val _uiState = MutableStateFlow(LoginUiState())
+        val uiState: StateFlow<LoginUiState> = _uiState.asStateFlow()
 
-    fun onLoginClick() {
-        // Kakao 로그인 로직 등이 들어갈 자리
+        fun onLoginClick() {
+            // Kakao 로그인 로직 등이 들어갈 자리
+        }
     }
-}

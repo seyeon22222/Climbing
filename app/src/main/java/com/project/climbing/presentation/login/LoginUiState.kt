@@ -2,5 +2,5 @@ package com.project.climbing.presentation.login
 
 data class LoginUiState(
     val isLoading: Boolean = false,
-    val error: String? = null
+    val error: String? = null,
 )

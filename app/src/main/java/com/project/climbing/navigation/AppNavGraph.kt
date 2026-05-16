@@ -21,7 +21,7 @@ fun AppNavGraph(navController: NavHostController) {
                     navController.navigate(Route.Home) {
                         popUpTo(Route.Login) { inclusive = true }
                     }
-                }
+                },
             )
         }
         composable<Route.Home> {
@@ -35,4 +35,3 @@ fun AppNavGraph(navController: NavHostController) {
         }
     }
 }
-

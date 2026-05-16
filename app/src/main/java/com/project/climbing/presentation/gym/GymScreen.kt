@@ -11,14 +11,12 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 
 @Composable
-fun GymScreen(
-    viewModel: GymViewModel = hiltViewModel()
-) {
+fun GymScreen(viewModel: GymViewModel = hiltViewModel()) {
     val uiState by viewModel.uiState.collectAsState()
 
     Box(
         modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
+        contentAlignment = Alignment.Center,
     ) {
         Text(text = "Gym Screen")
     }

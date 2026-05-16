@@ -8,7 +8,9 @@ import kotlinx.coroutines.flow.asStateFlow
 import javax.inject.Inject
 
 @HiltViewModel
-class GymViewModel @Inject constructor() : ViewModel() {
-    private val _uiState = MutableStateFlow(GymUiState())
-    val uiState: StateFlow<GymUiState> = _uiState.asStateFlow()
-}
+class GymViewModel
+    @Inject
+    constructor() : ViewModel() {
+        private val _uiState = MutableStateFlow(GymUiState())
+        val uiState: StateFlow<GymUiState> = _uiState.asStateFlow()
+    }

@@ -56,3 +56,13 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
     - `HomeScreen`, `GymScreen`, `ProfileScreen`: 각 화면의 기초 UI 구조(Placeholder) 및 ViewModel 연결
 5. 네비게이션 연동: `AppNavGraph`를 업데이트하여 새로 생성한 Screen 컴포저블들을 연결하고, 로그인 성공 시 홈 화면으로 이동하는 흐름을 완성
 6. MainActivity 리팩토링: `MainActivity`에 집중되어 있던 `Scaffold` 및 `BottomNavigationBar` 로직을 별도의 Root Composable인 `presentation/ClimbingMain.kt`로 분리하여 코드 가독성과 유지보수성을 높이고 `Application` 클래스와의 이름 충돌을 피하기 위해 Composable 함수의 이름을 `ClimbingMain`으로 명명
+# 26/05/17
+
+`ktlint` 및 `detekt` 검사 통과를 위한 코드 스타일 정합성 작업 수행
+
+1. **린트 위반 해결:** 
+    - `ktlintCheck` 실행 시 발견된 수십 건의 스타일 위반(Import 순서, Trailing Comma 누락, 줄바꿈 미준수 등)을 확인
+    - `./gradlew ktlintFormat`을 통해 프로젝트 전체 코드에 대한 자동 스타일 교정 수행
+2. **문서화:** 
+    - 향후 동일한 위반 방지를 위해 `docs/gemini.md`에 'Linting & Formatting Rules' 섹션 추가
+    - 작업 완료 후 반드시 `./gradlew ktlintCheck detekt`를 통한 검증 과정을 거치도록 규칙 명시

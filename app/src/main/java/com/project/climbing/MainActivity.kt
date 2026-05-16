@@ -4,8 +4,8 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import com.project.climbing.presentation.ClimbingMain
 import com.project.climbing.core.ui.theme.ClimbingTheme
+import com.project.climbing.presentation.ClimbingMain
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint

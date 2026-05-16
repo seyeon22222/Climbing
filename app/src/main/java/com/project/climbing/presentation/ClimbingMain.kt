@@ -26,9 +26,10 @@ fun ClimbingMain() {
     val currentDestination = navBackStackEntry?.destination
 
     // 하단 바를 표시할 경로들 확인
-    val showBottomBar = BottomNavItem.items.any { item ->
-        currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
-    }
+    val showBottomBar =
+        BottomNavItem.items.any { item ->
+            currentDestination?.hierarchy?.any { it.hasRoute(item.route::class) } == true
+        }
 
     Scaffold(
         modifier = Modifier.fillMaxSize(),
@@ -36,9 +37,10 @@ fun ClimbingMain() {
             if (showBottomBar) {
                 NavigationBar {
                     BottomNavItem.items.forEach { item ->
-                        val isSelected = currentDestination?.hierarchy?.any {
-                            it.hasRoute(item.route::class)
-                        } == true
+                        val isSelected =
+                            currentDestination?.hierarchy?.any {
+                                it.hasRoute(item.route::class)
+                            } == true
 
                         NavigationBarItem(
                             icon = { Icon(item.icon, contentDescription = item.label) },
@@ -52,12 +54,12 @@ fun ClimbingMain() {
                                     launchSingleTop = true
                                     restoreState = true
                                 }
-                            }
+                            },
                         )
                     }
                 }
             }
-        }
+        },
     ) { innerPadding ->
         Box(modifier = Modifier.padding(innerPadding)) {
             AppNavGraph(navController = navController)

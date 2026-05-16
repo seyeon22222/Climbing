@@ -9,24 +9,24 @@ import androidx.compose.ui.graphics.vector.ImageVector
 sealed class BottomNavItem(
     val route: Route,
     val icon: ImageVector,
-    val label: String
+    val label: String,
 ) {
     data object Home : BottomNavItem(
         route = Route.Home,
         icon = Icons.Default.Home,
-        label = "홈"
+        label = "홈",
     )
 
     data object Gym : BottomNavItem(
         route = Route.Gym,
         icon = Icons.Default.Map,
-        label = "암장"
+        label = "암장",
     )
 
     data object Profile : BottomNavItem(
         route = Route.Profile,
         icon = Icons.Default.Person,
-        label = "프로필"
+        label = "프로필",
     )
 
     companion object {
