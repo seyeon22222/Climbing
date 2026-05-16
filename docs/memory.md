@@ -22,9 +22,37 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
 
 다음으로 진행된 내용은 아래와 같아
  Navigation Compose 설정을 완료했습니다. 최신 방식인 Type-safe Navigation
-  (Navigation 2.8.0+ 및 Kotlin Serialization 활용)을 적용했습니다.
+  (Navigation 2.8.0+ 및 Kotlin Serialization 활용)을 적용
 
-1. 의존성 추가: libs.versions.toml 및 build.gradle.kts에 navigation-compose와 kotlinx-serialization 라이브러리 및 플러그인을 추가했습니다.
-2. Route 정의: navigation/Route.kt에 Login, Home, Gym, Profile 경로를 Serializable한 객체로 정의하여 타입 안전성을 확보했습니다.
-3. AppNavGraph 구현: navigation/AppNavGraph.kt에 NavHost를 설정하고, 각 경로에 대한 컴포저블(현재는 PlaceholderScreen)을 연결했습니다.
-4. MainActivity 연동: MainActivity에서 rememberNavController()를 통해 NavController를 생성하고 AppNavGraph를 호출하여 앱의 진입점에서 내비게이션이 작동하도록 설정했습니다.
+1. 의존성 추가: libs.versions.toml 및 build.gradle.kts에 navigation-compose와 kotlinx-serialization 라이브러리 및 플러그인을 추가
+2. Route 정의: navigation/Route.kt에 Login, Home, Gym, Profile 경로를 Serializable한 객체로 정의하여 타입 안전성을 확보
+3. AppNavGraph 구현: navigation/AppNavGraph.kt에 NavHost를 설정하고, 각 경로에 대한 컴포저블(현재는 PlaceholderScreen)을 연결
+4. MainActivity 연동: MainActivity에서 rememberNavController()를 통해 NavController를 생성하고 AppNavGraph를 호출하여 앱의 진입점에서 내비게이션이 작동하도록 설정
+
+# 26/05/15
+
+다음으로 진행된 내용은 아래와 같아
+1. .editorconfig 생성 : 코딩 컨벤션 정의 
+2. ktlint 추가 및 설정 완료 : 플러그인 적용, ktlint의 Format을 실행하여 기존에 작성되어있던 코드의 스타일 변경
+3. detekt 추가 및 설정 완료 : 플러그인 적용, 기본 detekt의 설정파일 detekt.yml 생성
+4. GitHub Actions 추가 : CI Action 생성
+  Action Flow
+  1. Main이나 Develop타겟으로 push, PR시 workflow 실행
+  2. 코드 체크아웃 및 JDK 17 설정
+  3. ktlint 검사 (ktlintCheck)
+  4. detekt 검사 (detekt)
+  5. 전체 빌드 및 테스트 실행 (build)
+5. PR Template 추가 
+
+# 26/05/16
+
+바텀 네비게이션(Bottom Navigation) 기반의 앱 UI 기초 구조를 구현
+
+1. 의존성 추가: 다양한 아이콘 사용을 위해 `androidx.compose.material:material-icons-extended`를 추가
+2. BottomNavItem 정의: `navigation/BottomNavItem.kt`를 생성하여 홈, 암장, 프로필 등 하단 탭 항목들을 정의하고 각 항목에 해당하는 Route와 아이콘, 라벨을 연결
+3. MainActivity UI 통합: `Scaffold`와 `NavigationBar`를 사용하여 하단 네비게이션 바를 구현했습니다. 현재 경로가 `Login`이 아닐 때만 하단 바가 보이도록 제어 로직을 추가
+4. 화면별 MVVM 구조 구축: `login`, `home`, `gym`, `profile` 각 패키지에 프로젝트 규칙(Screen, ViewModel, UiState)에 따른 기본 클래스들을 생성
+    - `LoginScreen`: 임시 로그인 버튼을 통해 메인 화면으로 진입할 수 있도록 구현
+    - `HomeScreen`, `GymScreen`, `ProfileScreen`: 각 화면의 기초 UI 구조(Placeholder) 및 ViewModel 연결
+5. 네비게이션 연동: `AppNavGraph`를 업데이트하여 새로 생성한 Screen 컴포저블들을 연결하고, 로그인 성공 시 홈 화면으로 이동하는 흐름을 완성
+6. MainActivity 리팩토링: `MainActivity`에 집중되어 있던 `Scaffold` 및 `BottomNavigationBar` 로직을 별도의 Root Composable인 `presentation/ClimbingMain.kt`로 분리하여 코드 가독성과 유지보수성을 높이고 `Application` 클래스와의 이름 충돌을 피하기 위해 Composable 함수의 이름을 `ClimbingMain`으로 명명

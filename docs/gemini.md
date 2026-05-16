@@ -135,3 +135,4 @@ util/
 # Coding Rules
 
 - 작업을하게 되면 모든 작업을 한뒤에 어떤 내용을 작업한것인지 매번 설명해줘
+- No use import wildcardpattern

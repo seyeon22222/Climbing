@@ -4,11 +4,10 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.compose.material3.Text
-import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import com.project.climbing.presentation.gym.GymScreen
+import com.project.climbing.presentation.home.HomeScreen
+import com.project.climbing.presentation.login.LoginScreen
+import com.project.climbing.presentation.profile.ProfileScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
@@ -17,26 +16,23 @@ fun AppNavGraph(navController: NavHostController) {
         startDestination = Route.Login
     ) {
         composable<Route.Login> {
-            PlaceholderScreen(name = "Login Screen")
+            LoginScreen(
+                onLoginSuccess = {
+                    navController.navigate(Route.Home) {
+                        popUpTo(Route.Login) { inclusive = true }
+                    }
+                }
+            )
         }
         composable<Route.Home> {
-            PlaceholderScreen(name = "Home Screen")
+            HomeScreen()
         }
         composable<Route.Gym> {
-            PlaceholderScreen(name = "Gym Screen")
+            GymScreen()
         }
         composable<Route.Profile> {
-            PlaceholderScreen(name = "Profile Screen")
+            ProfileScreen()
         }
     }
 }
 
-@Composable
-fun PlaceholderScreen(name: String) {
-    Box(
-        modifier = Modifier.fillMaxSize(),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(text = name)
-    }
-}
