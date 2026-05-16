@@ -13,7 +13,7 @@ import com.project.climbing.presentation.profile.ProfileScreen
 fun AppNavGraph(navController: NavHostController) {
     NavHost(
         navController = navController,
-        startDestination = Route.Login
+        startDestination = Route.Login,
     ) {
         composable<Route.Login> {
             LoginScreen(
