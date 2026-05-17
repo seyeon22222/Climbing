@@ -4,10 +4,12 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import com.project.climbing.presentation.challenge.ChallengeScreen
 import com.project.climbing.presentation.gym.GymScreen
 import com.project.climbing.presentation.home.HomeScreen
 import com.project.climbing.presentation.login.LoginScreen
 import com.project.climbing.presentation.profile.ProfileScreen
+import com.project.climbing.presentation.record.RecordScreen
 
 @Composable
 fun AppNavGraph(navController: NavHostController) {
@@ -29,6 +31,12 @@ fun AppNavGraph(navController: NavHostController) {
         }
         composable<Route.Gym> {
             GymScreen()
+        }
+        composable<Route.Record> {
+            RecordScreen()
+        }
+        composable<Route.Challenge> {
+            ChallengeScreen()
         }
         composable<Route.Profile> {
             ProfileScreen()

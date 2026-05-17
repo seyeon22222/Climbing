@@ -1,6 +1,8 @@
 package com.project.climbing.navigation
 
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.AddCircle
+import androidx.compose.material.icons.filled.EmojiEvents
 import androidx.compose.material.icons.filled.Home
 import androidx.compose.material.icons.filled.Map
 import androidx.compose.material.icons.filled.Person
@@ -23,6 +25,18 @@ sealed class BottomNavItem(
         label = "암장",
     )
 
+    data object Record : BottomNavItem(
+        route = Route.Record,
+        icon = Icons.Default.AddCircle,
+        label = "기록",
+    )
+
+    data object Challenge : BottomNavItem(
+        route = Route.Challenge,
+        icon = Icons.Default.EmojiEvents,
+        label = "도전",
+    )
+
     data object Profile : BottomNavItem(
         route = Route.Profile,
         icon = Icons.Default.Person,
@@ -30,6 +44,6 @@ sealed class BottomNavItem(
     )
 
     companion object {
-        val items = listOf(Home, Gym, Profile)
+        val items = listOf(Home, Gym, Record, Challenge, Profile)
     }
 }
