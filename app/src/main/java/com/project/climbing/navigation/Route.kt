@@ -13,5 +13,11 @@ sealed interface Route {
     data object Gym : Route
 
     @Serializable
+    data object Record : Route
+
+    @Serializable
+    data object Challenge : Route
+
+    @Serializable
     data object Profile : Route
 }
