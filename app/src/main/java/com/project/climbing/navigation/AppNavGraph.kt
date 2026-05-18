@@ -12,10 +12,13 @@ import com.project.climbing.presentation.profile.ProfileScreen
 import com.project.climbing.presentation.record.RecordScreen
 
 @Composable
-fun AppNavGraph(navController: NavHostController) {
+fun AppNavGraph(
+    navController: NavHostController,
+    startDestination: Any = Route.Login,
+) {
     NavHost(
         navController = navController,
-        startDestination = Route.Login,
+        startDestination = startDestination,
     ) {
         composable<Route.Login> {
             LoginScreen(

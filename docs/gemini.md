@@ -136,6 +136,7 @@ util/
 
 - 작업을하게 되면 모든 작업을 한뒤에 어떤 내용을 작업한것인지 매번 설명해줘
 - No use import wildcardpattern
+- 코드 작업 시 생략기호를 쓰지말고 만일 생략기호가 필요한 상황이라면 수정사항만 반영하고 생략기호부분은 건들지 않도록 준수한다.
 
 # Linting & Formatting Rules
 
