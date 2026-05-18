@@ -68,3 +68,26 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
 5. 기능별 화면 구조 구축: 새롭게 추가된 `record`와 `challenge` 패키지에 각각 `Screen`, `ViewModel`, `UiState` 기초 클래스를 생성하고 `AppNavGraph`에 연결.
 6. 기존 화면 리팩토링: `LoginScreen`에 커스텀 버튼 및 디자인 텍스트 스타일을 적용하여 디자인 가이드와 일치하도록 수정.
 
+
+카카오 로그인(OAuth) 연동 및 인증 흐름 구축
+
+1. 카카오 SDK 설정:
+    - `libs.versions.toml`에 `kakao-user` SDK(v2-user) 의존성 추가
+    - `app/build.gradle.kts`에 SDK 반영 및 `AndroidManifest.xml`에 인터넷 권한 추가
+    - `AndroidManifest.xml`에 카카오 로그인 Redirect URI를 위한 `AuthCodeHandlerActivity` 등록
+    - `strings.xml`에 `kakao_native_app_key` 플레이스홀더 추가
+2. SDK 초기화: `ClimbingApp.kt`에서 `KakaoSdk.init` 호출하여 앱 시작 시 SDK 초기화
+3. 인증 레이어 구현:
+    - `AuthRepository`: 카카오 로그인/로그아웃 기능을 정의하는 도메인 인터페이스 생성
+    - `AuthRepositoryImpl`: 카카오 SDK를 사용하여 `suspendCancellableCoroutine` 기반의 비동기 로그인 로직 구현 (카카오톡 및 카카오계정 로그인 지원)
+    - `RepositoryModule`: Hilt를 이용해 `AuthRepository` 의존성 주입 설정
+4. 로그인 UI 연동:
+    - `LoginUiState`: `isLoading`, `error` 상태 필드 추가
+    - `LoginViewModel`: `AuthRepository`를 주입받아 카카오 로그인 비즈니스 로직 처리 및 상태 관리 구현
+    - `LoginScreen`: 실제 카카오 로그인 버튼 클릭 시 `LocalContext`를 통해 로그인을 트리거하고 로딩 및 에러 UI 표시
+    5. 카카오 앱 키 보안 관리 설정:
+    - `local.properties`에서 `KAKAO_NATIVE_APP_KEY`를 관리하도록 변경
+    - `app/build.gradle.kts`에서 `local.properties`를 읽어 `BuildConfig` 및 `manifestPlaceholders`에 주입하도록 빌드 스크립트 수정
+    - `ClimbingApp.kt`에서 `BuildConfig.KAKAO_NATIVE_APP_KEY`를 참조하여 SDK 초기화
+    - `AndroidManifest.xml`에서 `${KAKAO_NATIVE_APP_KEY}` 자리표시자를 사용하여 리다이렉트 URI 설정
+    - `strings.xml`에 하드코딩된 키 제거
