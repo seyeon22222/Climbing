@@ -85,9 +85,43 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
     - `LoginUiState`: `isLoading`, `error` 상태 필드 추가
     - `LoginViewModel`: `AuthRepository`를 주입받아 카카오 로그인 비즈니스 로직 처리 및 상태 관리 구현
     - `LoginScreen`: 실제 카카오 로그인 버튼 클릭 시 `LocalContext`를 통해 로그인을 트리거하고 로딩 및 에러 UI 표시
-    5. 카카오 앱 키 보안 관리 설정:
+5. 카카오 앱 키 보안 관리 설정:
     - `local.properties`에서 `KAKAO_NATIVE_APP_KEY`를 관리하도록 변경
     - `app/build.gradle.kts`에서 `local.properties`를 읽어 `BuildConfig` 및 `manifestPlaceholders`에 주입하도록 빌드 스크립트 수정
     - `ClimbingApp.kt`에서 `BuildConfig.KAKAO_NATIVE_APP_KEY`를 참조하여 SDK 초기화
     - `AndroidManifest.xml`에서 `${KAKAO_NATIVE_APP_KEY}` 자리표시자를 사용하여 리다이렉트 URI 설정
     - `strings.xml`에 하드코딩된 키 제거
+
+# 26/05/18
+
+사용자 세션(User Session) 전반에 걸친 기능 구현 완료
+
+1. 도메인 모델 정의:
+    - `domain/model/User.kt`: 사용자 정보를 담는 데이터 클래스(id, 닉네임, 프로필 이미지, 이메일) 생성
+2. 인증 저장소(AuthRepository) 확장:
+    - `authState`: `AuthState`를 관찰할 수 있는 Flow 추가 (Uninitialized, Authenticated, Unauthenticated)
+    - `getUserInfo()`: 현재 로그인된 사용자의 정보를 가져오는 기능 추가
+    - `isLoggedIn()`: 세션 유지 여부를 확인하는 로직 구현
+3. 인증 저장소 구현(AuthRepositoryImpl) 업데이트:
+    - Kakao SDK를 연동하여 실제 사용자 정보를 가져오고 `authState`를 업데이트하는 로직 구현
+    - 로그인 성공 시 즉시 유저 정보를 동기화하도록 개선
+    - 로그아웃 시 상태를 `Unauthenticated`로 변경
+4. 앱 전역 세션 관리:
+    - `MainViewModel`: 앱 시작 시 세션 상태를 체크하고 전역적으로 인증 상태를 제공
+    - `ClimbingMain`: 인증 상태(`authState`)를 관찰하여 상태가 `Uninitialized`일 때 로딩 바를 표시하고, 로그인 여부에 따라 시작 화면을 동적으로 결정
+    - `LaunchedEffect`를 이용해 로그인/로그아웃 시 자동으로 화면 전환이 일어나도록 내비게이션 로직 강화
+5. 프로필 화면 연동:
+    - `ProfileViewModel`: `AuthRepository`의 유저 정보를 UI 상태에 반영하고 로그아웃 명령 처리
+    - `ProfileScreen`: 유저의 닉네임, 이메일 등을 표시하고 로그아웃 버튼을 통해 세션을 종료할 수 있도록 UI 구현
+    - 프로필 이미지 영역에 기본 아이콘 적용 및 디자인 가이드 준수
+추가 작업사항
+
+1. 이메일 노출 제거: 사용자의 개인정보 보호 및 요청 사항에 따라 이메일 표시 영역을 삭제
+   2. 프로필 편집 모드 추가:
+       * 닉네임 옆의 편집(아이콘) 버튼을 누르면 편집 모드로 전환
+       * 편집 모드에서는 닉네임을 입력할 수 있는 텍스트 필드 노출
+       * 프로필 이미지 우측 하단에 카메라 아이콘이 추가되어 이미지 변경이 가능함을 시각적 표시
+   3. 저장 및 취소 로직:
+       * 편집 중 마음이 바뀌면 취소 버튼을 통해 이전 닉네임으로 롤백
+       * 저장 버튼을 누르면 변경된 닉네임이 반영 (현재는 UI 상태만 변경되며, 추후 DB 연동 시 실제 저장)
+   4. 디자인 개선: Material3의 OutlinedTextField와 커스텀 버튼들을 사용하여 앱의 다크 테마와 어울리는 세련된 편집 환경을 구축
