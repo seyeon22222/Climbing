@@ -49,10 +49,9 @@ class ProfileViewModel
         }
 
         fun onSaveClick() {
-            // TODO: DB 연동 시 실제 저장 로직 구현
             viewModelScope.launch {
                 _uiState.update { it.copy(isLoading = true) }
-                // 임시로 상태만 업데이트
+                // 임시로 상태만 업데이트하며, 실제 저장 로직은 추후 구현합니다.
                 val currentUser = _uiState.value.user
                 if (currentUser != null) {
                     val updatedUser = currentUser.copy(nickname = _uiState.value.nicknameInput)
@@ -83,6 +82,6 @@ class ProfileViewModel
         }
 
         fun onImageEditClick() {
-            // TODO: 이미지 선택기 호출 로직
+            // 이미지 선택 기능은 향후 갤러리 연동 시 구현할 예정입니다.
         }
     }

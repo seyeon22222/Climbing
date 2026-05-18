@@ -18,6 +18,8 @@ interface AuthRepository {
 
 sealed interface AuthState {
     data object Uninitialized : AuthState
+
     data class Authenticated(val user: User) : AuthState
+
     data object Unauthenticated : AuthState
 }

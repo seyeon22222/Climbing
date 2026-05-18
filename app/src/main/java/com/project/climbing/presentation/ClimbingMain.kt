@@ -18,9 +18,11 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.NavGraph.Companion.findStartDestination
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.project.climbing.core.ui.theme.BackgroundBlack
@@ -75,40 +77,10 @@ fun ClimbingMain(viewModel: MainViewModel = hiltViewModel()) {
         modifier = Modifier.fillMaxSize(),
         bottomBar = {
             if (showBottomBar) {
-                NavigationBar(
-                    containerColor = BackgroundBlack,
-                    contentColor = TextGrey,
-                ) {
-                    BottomNavItem.items.forEach { item ->
-                        val isSelected =
-                            currentDestination?.hierarchy?.any {
-                                it.hasRoute(item.route::class)
-                            } == true
-
-                        NavigationBarItem(
-                            icon = { Icon(item.icon, contentDescription = item.label) },
-                            label = { Text(item.label) },
-                            selected = isSelected,
-                            colors =
-                                NavigationBarItemDefaults.colors(
-                                    selectedIconColor = MainOrange,
-                                    selectedTextColor = MainOrange,
-                                    unselectedIconColor = TextGrey,
-                                    unselectedTextColor = TextGrey,
-                                    indicatorColor = Color.Transparent,
-                                ),
-                            onClick = {
-                                navController.navigate(item.route) {
-                                    popUpTo(navController.graph.findStartDestination().id) {
-                                        saveState = true
-                                    }
-                                    launchSingleTop = true
-                                    restoreState = true
-                                }
-                            },
-                        )
-                    }
-                }
+                ClimbingBottomBar(
+                    navController = navController,
+                    currentDestination = currentDestination,
+                )
             }
         },
     ) { innerPadding ->
@@ -116,6 +88,47 @@ fun ClimbingMain(viewModel: MainViewModel = hiltViewModel()) {
             AppNavGraph(
                 navController = navController,
                 startDestination = if (authState is AuthState.Authenticated) Route.Home else Route.Login,
+            )
+        }
+    }
+}
+
+@Composable
+private fun ClimbingBottomBar(
+    navController: NavHostController,
+    currentDestination: NavDestination?,
+) {
+    NavigationBar(
+        containerColor = BackgroundBlack,
+        contentColor = TextGrey,
+    ) {
+        BottomNavItem.items.forEach { item ->
+            val isSelected =
+                currentDestination?.hierarchy?.any {
+                    it.hasRoute(item.route::class)
+                } == true
+
+            NavigationBarItem(
+                icon = { Icon(item.icon, contentDescription = item.label) },
+                label = { Text(item.label) },
+                selected = isSelected,
+                colors =
+                    NavigationBarItemDefaults.colors(
+                        selectedIconColor = MainOrange,
+                        selectedTextColor = MainOrange,
+                        unselectedIconColor = TextGrey,
+                        unselectedTextColor = TextGrey,
+                        indicatorColor = Color.Transparent,
+                    ),
+                onClick = {
+                    navController.navigate(item.route) {
+                        popUpTo(navController.graph.findStartDestination().id) {
+                            saveState = true
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                },
             )
         }
     }

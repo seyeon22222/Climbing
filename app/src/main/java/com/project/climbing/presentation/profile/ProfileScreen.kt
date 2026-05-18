@@ -53,115 +53,155 @@ fun ProfileScreen(viewModel: ProfileViewModel = hiltViewModel()) {
     ) {
         Spacer(modifier = Modifier.height(40.dp))
 
-        // 프로필 이미지 영역
-        Box(
-            modifier = Modifier.size(120.dp),
-            contentAlignment = Alignment.BottomEnd,
-        ) {
-            Box(
-                modifier =
-                    Modifier
-                        .fillMaxSize()
-                        .clip(CircleShape)
-                        .background(SurfaceDark)
-                        .clickable(enabled = uiState.isEditing) { viewModel.onImageEditClick() },
-                contentAlignment = Alignment.Center,
-            ) {
-                Icon(
-                    imageVector = Icons.Default.Person,
-                    contentDescription = null,
-                    modifier = Modifier.size(70.dp),
-                    tint = TextGrey,
-                )
-            }
-
-            if (uiState.isEditing) {
-                Box(
-                    modifier =
-                        Modifier
-                            .size(36.dp)
-                            .clip(CircleShape)
-                            .background(MainOrange)
-                            .padding(8.dp),
-                    contentAlignment = Alignment.Center,
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CameraAlt,
-                        contentDescription = "Change Image",
-                        tint = TextWhite,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-            }
-        }
+        ProfileImageSection(
+            isEditing = uiState.isEditing,
+            onImageEditClick = viewModel::onImageEditClick,
+        )
 
         Spacer(modifier = Modifier.height(24.dp))
 
-        // 닉네임 영역
-        if (uiState.isEditing) {
-            OutlinedTextField(
-                value = uiState.nicknameInput,
-                onValueChange = viewModel::onNicknameChange,
-                modifier = Modifier.fillMaxWidth(),
-                label = { Text("닉네임", color = TextGrey) },
-                singleLine = true,
-                colors =
-                    OutlinedTextFieldDefaults.colors(
-                        focusedTextColor = TextWhite,
-                        unfocusedTextColor = TextWhite,
-                        focusedBorderColor = MainOrange,
-                        unfocusedBorderColor = SurfaceDark,
-                        cursorColor = MainOrange,
-                    ),
-            )
-        } else {
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.Center,
-            ) {
-                Text(
-                    text = uiState.user?.nickname ?: "사용자",
-                    style = MaterialTheme.typography.headlineMedium,
-                    color = TextWhite,
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                IconButton(onClick = viewModel::onEditClick) {
-                    Icon(
-                        imageVector = Icons.Default.Edit,
-                        contentDescription = "Edit Profile",
-                        tint = TextGrey,
-                        modifier = Modifier.size(20.dp),
-                    )
-                }
-            }
-        }
+        NicknameSection(
+            isEditing = uiState.isEditing,
+            nicknameInput = uiState.nicknameInput,
+            userNickname = uiState.user?.nickname,
+            onNicknameChange = viewModel::onNicknameChange,
+            onEditClick = viewModel::onEditClick,
+        )
 
         Spacer(modifier = Modifier.weight(1f))
 
-        // 버튼 영역
-        if (uiState.isEditing) {
-            Row(modifier = Modifier.fillMaxWidth()) {
-                Box(modifier = Modifier.weight(1f)) {
-                    ClimbingSecondaryButton(
-                        text = "취소",
-                        onClick = viewModel::onCancelClick,
-                    )
-                }
-                Spacer(modifier = Modifier.width(12.dp))
-                Box(modifier = Modifier.weight(1f)) {
-                    ClimbingPrimaryButton(
-                        text = "저장",
-                        onClick = viewModel::onSaveClick,
-                    )
-                }
-            }
-        } else {
-            ClimbingSecondaryButton(
-                text = "로그아웃",
-                onClick = viewModel::onLogoutClick,
+        ProfileActions(
+            isEditing = uiState.isEditing,
+            onCancelClick = viewModel::onCancelClick,
+            onSaveClick = viewModel::onSaveClick,
+            onLogoutClick = viewModel::onLogoutClick,
+        )
+
+        Spacer(modifier = Modifier.height(24.dp))
+    }
+}
+
+@Composable
+private fun ProfileImageSection(
+    isEditing: Boolean,
+    onImageEditClick: () -> Unit,
+) {
+    Box(
+        modifier = Modifier.size(120.dp),
+        contentAlignment = Alignment.BottomEnd,
+    ) {
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxSize()
+                    .clip(CircleShape)
+                    .background(SurfaceDark)
+                    .clickable(enabled = isEditing) { onImageEditClick() },
+            contentAlignment = Alignment.Center,
+        ) {
+            Icon(
+                imageVector = Icons.Default.Person,
+                contentDescription = null,
+                modifier = Modifier.size(70.dp),
+                tint = TextGrey,
             )
         }
 
-        Spacer(modifier = Modifier.height(24.dp))
+        if (isEditing) {
+            Box(
+                modifier =
+                    Modifier
+                        .size(36.dp)
+                        .clip(CircleShape)
+                        .background(MainOrange)
+                        .padding(8.dp),
+                contentAlignment = Alignment.Center,
+            ) {
+                Icon(
+                    imageVector = Icons.Default.CameraAlt,
+                    contentDescription = "Change Image",
+                    tint = TextWhite,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun NicknameSection(
+    isEditing: Boolean,
+    nicknameInput: String,
+    userNickname: String?,
+    onNicknameChange: (String) -> Unit,
+    onEditClick: () -> Unit,
+) {
+    if (isEditing) {
+        OutlinedTextField(
+            value = nicknameInput,
+            onValueChange = onNicknameChange,
+            modifier = Modifier.fillMaxWidth(),
+            label = { Text("닉네임", color = TextGrey) },
+            singleLine = true,
+            colors =
+                OutlinedTextFieldDefaults.colors(
+                    focusedTextColor = TextWhite,
+                    unfocusedTextColor = TextWhite,
+                    focusedBorderColor = MainOrange,
+                    unfocusedBorderColor = SurfaceDark,
+                    cursorColor = MainOrange,
+                ),
+        )
+    } else {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.Center,
+        ) {
+            Text(
+                text = userNickname ?: "사용자",
+                style = MaterialTheme.typography.headlineMedium,
+                color = TextWhite,
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            IconButton(onClick = onEditClick) {
+                Icon(
+                    imageVector = Icons.Default.Edit,
+                    contentDescription = "Edit Profile",
+                    tint = TextGrey,
+                    modifier = Modifier.size(20.dp),
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun ProfileActions(
+    isEditing: Boolean,
+    onCancelClick: () -> Unit,
+    onSaveClick: () -> Unit,
+    onLogoutClick: () -> Unit,
+) {
+    if (isEditing) {
+        Row(modifier = Modifier.fillMaxWidth()) {
+            Box(modifier = Modifier.weight(1f)) {
+                ClimbingSecondaryButton(
+                    text = "취소",
+                    onClick = onCancelClick,
+                )
+            }
+            Spacer(modifier = Modifier.width(12.dp))
+            Box(modifier = Modifier.weight(1f)) {
+                ClimbingPrimaryButton(
+                    text = "저장",
+                    onClick = onSaveClick,
+                )
+            }
+        }
+    } else {
+        ClimbingSecondaryButton(
+            text = "로그아웃",
+            onClick = onLogoutClick,
+        )
     }
 }
