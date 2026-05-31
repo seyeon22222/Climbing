@@ -125,3 +125,22 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
        * 편집 중 마음이 바뀌면 취소 버튼을 통해 이전 닉네임으로 롤백
        * 저장 버튼을 누르면 변경된 닉네임이 반영 (현재는 UI 상태만 변경되며, 추후 DB 연동 시 실제 저장)
    4. 디자인 개선: Material3의 OutlinedTextField와 커스텀 버튼들을 사용하여 앱의 다크 테마와 어울리는 세련된 편집 환경을 구축
+
+# 26/05/31
+
+1. 도메인 모델 정의:
+       * Gym: 클라이밍장 정보를 담는 데이터 클래스(이름, 주소, 이미지, 난이도 목록 등)를 domain/model/Gym.kt에 생성
+       * DifficultyLevel: 난이도 이름과 색상 코드를 포함하는 클래스를 정의
+   2. 저장소 인터페이스 및 가짜 데이터 구현:
+       * GymRepository: 클라이밍장 목록 및 상세 정보를 가져오는 인터페이스를 domain/repository/GymRepository.kt에 정의
+       * GymRepositoryImpl: Supabase 연동 전까지 사용할 테스트용 가짜 데이터(더클라이밍 마포점, 서울볼더스 등)를 포함하여 data/repository/GymRepositoryImpl.kt에 구현
+   3. 의존성 주입(Hilt) 설정:
+       * RepositoryModule: 새롭게 생성한 GymRepository를 Hilt가 주입할 수 있도록 바인딩 설정을 추가
+   4. 이미지 로딩 라이브러리 추가:
+       * 목록에서 이미지를 표시하기 위해 Coil 라이브러리를 프로젝트에 추가했습니다 (libs.versions.toml, build.gradle.kts 수정).
+   5. 화면 구현 및 데이터 연동:
+       * GymUiState: 클라이밍장 목록 상태를 관리할 수 있도록 필드를 추가
+       * GymViewModel: GymRepository를 주입받아 초기 로드 시 목록 데이터를 가져오도록 로직을 추가
+       * GymScreen: LazyColumn과 ClimbingCard를 사용하여 클라이밍장 목록 UI를 구현했습니다. 각 항목에는 이미지, 이름, 주소, 그리고 해당 암장의 난이도 구성을 시각적으로 보여주는 색상 칩들이 포함
+
+       
