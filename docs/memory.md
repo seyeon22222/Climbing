@@ -163,3 +163,20 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
 4. 목록 화면 연동:
     * GymScreen.kt: 각 클라이밍장 카드를 클릭할 수 있도록 clickable 속성을 추가하고, 클릭 시 상세 페이지로 이동하는 콜백을 연결
 
+
+카카오 지도 SDK 연동 및 상세 화면 내 지도 표시
+
+1. SDK 의존성 및 환경 설정:
+    * settings.gradle.kts: 카카오 지도 전용 Maven 저장소를 추가했습니다.
+    * libs.versions.toml & build.gradle.kts: 카카오 지도 SDK(v2, 2.13.2 버전) 의존성을 추가하고, 네이티브 라이브러리 지원을 위한 abiFilters(arm64-v8a,
+        armeabi-v7a)를 설정했습니다.
+2. 권한 및 보안 설정:
+    * AndroidManifest.xml: 위치 권한(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)을 추가하고, SDK 연동에 필요한 com.kakao.vectormap.APP_KEY 메타데이터를
+        등록했습니다.
+3. 데이터 보강:
+    * GymRepositoryImpl.kt: 가짜 데이터(더클라이밍 마포점 등)에 각 암장의 실제 위도/경도 좌표를 추가했습니다.
+4. 상세 화면 지도 UI 구현:
+    * GymDetailScreen.kt:
+        * AndroidView를 사용하여 Compose 내부에 MapView를 배치했습니다.
+        * 해당 암장의 좌표를 중심으로 카메라가 이동하고, 암장 이름이 표시된 마커(Label)가 찍히도록 구현했습니다.
+        * 지도 하단에 실제 위도/경도 정보를 텍스트로 표시하여 가시성을 높였습니다.

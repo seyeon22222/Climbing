@@ -33,6 +33,8 @@ class GymRepositoryImpl
                             DifficultyLevel("회색", "#808080"),
                             DifficultyLevel("검정색", "#000000"),
                         ),
+                    latitude = 37.5552,
+                    longitude = 126.9212,
                 ),
                 Gym(
                     id = "2",
@@ -51,6 +53,8 @@ class GymRepositoryImpl
                             DifficultyLevel("남색", "#000080"),
                             DifficultyLevel("보라", "#800080"),
                         ),
+                    latitude = 37.5187,
+                    longitude = 126.8864,
                 ),
                 Gym(
                     id = "3",
@@ -67,6 +71,8 @@ class GymRepositoryImpl
                             DifficultyLevel("V2", "#008000"),
                             DifficultyLevel("V3", "#0000FF"),
                         ),
+                    latitude = 37.5744,
+                    longitude = 126.9882,
                 ),
             )
 

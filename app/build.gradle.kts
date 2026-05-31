@@ -32,6 +32,11 @@ android {
 
         buildConfigField("String", "KAKAO_NATIVE_APP_KEY", "\"$kakaoKey\"")
         manifestPlaceholders["KAKAO_NATIVE_APP_KEY"] = kakaoKey
+
+        ndk {
+            abiFilters.add("arm64-v8a")
+            abiFilters.add("armeabi-v7a")
+        }
     }
 
     buildTypes {
@@ -78,6 +83,7 @@ dependencies {
     implementation(libs.androidx.navigation.compose)
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kakao.user)
+    implementation(libs.kakao.maps)
 
     // Coil
     implementation(libs.coil.compose)

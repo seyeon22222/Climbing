@@ -1,5 +1,6 @@
 package com.project.climbing.presentation.gym.detail
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -14,6 +15,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.LocationOn
@@ -28,16 +30,33 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.viewinterop.AndroidView
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil.compose.AsyncImage
+import com.kakao.vectormap.KakaoMap
+import com.kakao.vectormap.KakaoMapReadyCallback
+import com.kakao.vectormap.LatLng
+import com.kakao.vectormap.MapLifeCycleCallback
+import com.kakao.vectormap.MapView
+import com.kakao.vectormap.label.LabelOptions
+import com.kakao.vectormap.label.LabelStyle
+import com.kakao.vectormap.label.LabelStyles
+import com.kakao.vectormap.label.LabelTextBuilder
 import com.project.climbing.domain.model.DifficultyLevel
 import com.project.climbing.domain.model.Gym
 import android.graphics.Color as AndroidColor
@@ -159,6 +178,10 @@ private fun GymInfoSection(
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
         }
+        Spacer(modifier = Modifier.height(16.dp))
+
+        KakaoMapSection(gym = gym)
+
         Spacer(modifier = Modifier.height(24.dp))
         Text(
             text = "난이도 정보",
@@ -166,6 +189,41 @@ private fun GymInfoSection(
             fontWeight = FontWeight.Bold,
         )
         Spacer(modifier = Modifier.height(16.dp))
+    }
+}
+
+@Composable
+private fun KakaoMapSection(
+    gym: Gym,
+    modifier: Modifier = Modifier,
+) {
+    Column(modifier = modifier.fillMaxWidth()) {
+        Text(
+            text = "위치",
+            style = MaterialTheme.typography.titleMedium,
+            fontWeight = FontWeight.Bold,
+        )
+        Spacer(modifier = Modifier.height(8.dp))
+        Box(
+            modifier =
+                Modifier
+                    .fillMaxWidth()
+                    .height(200.dp)
+                    .clip(RoundedCornerShape(8.dp))
+                    .background(MaterialTheme.colorScheme.surfaceVariant),
+        ) {
+            KakaoMapView(
+                latitude = gym.latitude,
+                longitude = gym.longitude,
+                gymName = gym.name,
+            )
+        }
+        Spacer(modifier = Modifier.height(8.dp))
+        Text(
+            text = "위도: ${gym.latitude}, 경도: ${gym.longitude}",
+            style = MaterialTheme.typography.labelSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+        )
     }
 }
 
@@ -195,3 +253,79 @@ private fun DifficultyItem(
         )
     }
 }
+
+@Composable
+fun KakaoMapView(
+    latitude: Double,
+    longitude: Double,
+    gymName: String,
+    modifier: Modifier = Modifier,
+) {
+    val context = LocalContext.current
+    val mapView = remember { MapView(context) }
+    var isMapStarted by remember { mutableStateOf(false) }
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val observer =
+            LifecycleEventObserver { _, event ->
+                if (isMapStarted) {
+                    when (event) {
+                        Lifecycle.Event.ON_RESUME -> mapView.resume()
+                        Lifecycle.Event.ON_PAUSE -> mapView.pause()
+                        else -> {}
+                    }
+                }
+            }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
+    AndroidView(
+        factory = {
+            mapView.apply {
+                start(
+                    object : MapLifeCycleCallback() {
+                        override fun onMapDestroy() {
+                            Log.d("KakaoMapView", "onMapDestroy")
+                        }
+
+                        override fun onMapError(error: Exception) {
+                            Log.e("KakaoMapView", "onMapError: ${error.message}")
+                        }
+                    },
+                    object : KakaoMapReadyCallback() {
+                        override fun onMapReady(kakaoMap: KakaoMap) {
+                            val gymLocation = LatLng.from(latitude, longitude)
+                            val styles =
+                                kakaoMap.labelManager?.addLabelStyles(
+                                    LabelStyles.from(LabelStyle.from(android.R.drawable.ic_dialog_map)),
+                                )
+
+                            kakaoMap.labelManager?.layer?.addLabel(
+                                LabelOptions.from(gymLocation)
+                                    .setStyles(styles)
+                                    .setTexts(LabelTextBuilder().setTexts(gymName)),
+                            )
+
+                            kakaoMap.moveCamera(
+                                com.kakao.vectormap.camera.CameraUpdateFactory.newCenterPosition(
+                                    gymLocation,
+                                    DEFAULT_ZOOM_LEVEL,
+                                ),
+                            )
+                        }
+
+                        override fun getPosition(): LatLng = LatLng.from(latitude, longitude)
+                    },
+                )
+                isMapStarted = true
+            }
+        },
+        modifier = modifier.fillMaxSize(),
+    )
+}
+
+private const val DEFAULT_ZOOM_LEVEL = 15
