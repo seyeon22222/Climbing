@@ -1,7 +1,6 @@
 package com.project.climbing.presentation.gym
 
 import GymUiState
-import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -38,6 +37,7 @@ import coil.compose.AsyncImage
 import com.project.climbing.domain.model.Gym
 import com.project.climbing.presentation.component.ClimbingCard
 import kotlinx.coroutines.flow.StateFlow
+import android.graphics.Color as AndroidColor
 
 @Composable
 fun GymScreen(
@@ -103,9 +103,10 @@ fun GymItem(
     modifier: Modifier = Modifier,
 ) {
     ClimbingCard(
-        modifier = modifier
-            .fillMaxWidth()
-            .clickable(onClick = onClick),
+        modifier =
+            modifier
+                .fillMaxWidth()
+                .clickable(onClick = onClick),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),

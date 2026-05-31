@@ -42,7 +42,14 @@ class GymDetailViewModel
                             gym = gym,
                         )
                     }
-                } catch (e: Exception) {
+                } catch (e: IllegalStateException) {
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            error = e.message,
+                        )
+                    }
+                } catch (e: IllegalArgumentException) {
                     _uiState.update {
                         it.copy(
                             isLoading = false,
