@@ -125,3 +125,58 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
        * 편집 중 마음이 바뀌면 취소 버튼을 통해 이전 닉네임으로 롤백
        * 저장 버튼을 누르면 변경된 닉네임이 반영 (현재는 UI 상태만 변경되며, 추후 DB 연동 시 실제 저장)
    4. 디자인 개선: Material3의 OutlinedTextField와 커스텀 버튼들을 사용하여 앱의 다크 테마와 어울리는 세련된 편집 환경을 구축
+
+# 26/05/31
+
+도메인 구성
+
+1. 도메인 모델 정의:
+    * Gym: 클라이밍장 정보를 담는 데이터 클래스(이름, 주소, 이미지, 난이도 목록 등)를 domain/model/Gym.kt에 생성
+    * DifficultyLevel: 난이도 이름과 색상 코드를 포함하는 클래스를 정의
+2. 저장소 인터페이스 및 가짜 데이터 구현:
+    * GymRepository: 클라이밍장 목록 및 상세 정보를 가져오는 인터페이스를 domain/repository/GymRepository.kt에 정의
+    * GymRepositoryImpl: Supabase 연동 전까지 사용할 테스트용 가짜 데이터(더클라이밍 마포점, 서울볼더스 등)를 포함하여 data/repository/GymRepositoryImpl.kt에 구현
+3. 의존성 주입(Hilt) 설정:
+    * RepositoryModule: 새롭게 생성한 GymRepository를 Hilt가 주입할 수 있도록 바인딩 설정을 추가
+4. 이미지 로딩 라이브러리 추가:
+    * 목록에서 이미지를 표시하기 위해 Coil 라이브러리를 프로젝트에 추가했습니다 (libs.versions.toml, build.gradle.kts 수정).
+5. 화면 구현 및 데이터 연동:
+    * GymUiState: 클라이밍장 목록 상태를 관리할 수 있도록 필드를 추가
+    * GymViewModel: GymRepository를 주입받아 초기 로드 시 목록 데이터를 가져오도록 로직을 추가
+    * GymScreen: LazyColumn과 ClimbingCard를 사용하여 클라이밍장 목록 UI를 구현했습니다. 각 항목에는 이미지, 이름, 주소, 그리고 해당 암장의 난이도 구성을 시각적으로 보여주는 색상 칩들이 포함
+
+상세 페이지 구현
+
+1. 내비게이션 설정:
+    * Route.kt: gymId를 파라미터로 받는 GymDetail 경로를 추가
+    * AppNavGraph.kt: GymDetailScreen을 내비게이션 그래프에 연결하고, 목록에서 상세로 이동하는 로직을 추가
+2. 상세 페이지 MVVM 구조 구축:
+    * presentation/gym/detail 패키지를 생성하여 상세 화면 관련 파일들을 정리
+    * GymDetailUiState: 로딩 상태, 조회된 암장 데이터, 에러 메시지를 관리
+    * GymDetailViewModel: SavedStateHandle을 통해 전달받은 gymId로 가짜 저장소(GymRepository)에서 상세 정보를 조회
+    * GymDetailScreen: 조회된 데이터를 바탕으로 UI를 구성
+3. UI 디자인 및 기능:
+    * 대표 이미지: 화면 상단에 암장의 대표 사진을 크게 표시
+    * 정보 표시: 암장 이름과 위치(아이콘 포함)를 표시
+    * 난이도 리스트: 해당 암장의 모든 난이도 정보를 색상 칩과 함께 리스트 형태로 상세히 표시
+    * 뒤로가기: 상단 앱바에 뒤로가기 버튼을 배치
+4. 목록 화면 연동:
+    * GymScreen.kt: 각 클라이밍장 카드를 클릭할 수 있도록 clickable 속성을 추가하고, 클릭 시 상세 페이지로 이동하는 콜백을 연결
+
+
+카카오 지도 SDK 연동 및 상세 화면 내 지도 표시
+
+1. SDK 의존성 및 환경 설정:
+    * settings.gradle.kts: 카카오 지도 전용 Maven 저장소를 추가했습니다.
+    * libs.versions.toml & build.gradle.kts: 카카오 지도 SDK(v2, 2.13.2 버전) 의존성을 추가하고, 네이티브 라이브러리 지원을 위한 abiFilters(arm64-v8a,
+        armeabi-v7a)를 설정했습니다.
+2. 권한 및 보안 설정:
+    * AndroidManifest.xml: 위치 권한(ACCESS_FINE_LOCATION, ACCESS_COARSE_LOCATION)을 추가하고, SDK 연동에 필요한 com.kakao.vectormap.APP_KEY 메타데이터를
+        등록했습니다.
+3. 데이터 보강:
+    * GymRepositoryImpl.kt: 가짜 데이터(더클라이밍 마포점 등)에 각 암장의 실제 위도/경도 좌표를 추가했습니다.
+4. 상세 화면 지도 UI 구현:
+    * GymDetailScreen.kt:
+        * AndroidView를 사용하여 Compose 내부에 MapView를 배치했습니다.
+        * 해당 암장의 좌표를 중심으로 카메라가 이동하고, 암장 이름이 표시된 마커(Label)가 찍히도록 구현했습니다.
+        * 지도 하단에 실제 위도/경도 정보를 텍스트로 표시하여 가시성을 높였습니다.

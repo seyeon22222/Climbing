@@ -1,7 +1,9 @@
+package com.project.climbing.presentation.gym.detail
+
 import com.project.climbing.domain.model.Gym
 
-data class GymUiState(
+data class GymDetailUiState(
     val isLoading: Boolean = false,
-    val gyms: List<Gym> = emptyList(),
+    val gym: Gym? = null,
     val error: String? = null,
 )
