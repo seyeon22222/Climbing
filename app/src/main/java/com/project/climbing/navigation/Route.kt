@@ -16,6 +16,9 @@ sealed interface Route {
     data class GymDetail(val gymId: String) : Route
 
     @Serializable
+    data class RecordAdd(val gymId: String) : Route
+
+    @Serializable
     data object Record : Route
 
     @Serializable

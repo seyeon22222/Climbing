@@ -59,12 +59,14 @@ import com.kakao.vectormap.label.LabelStyles
 import com.kakao.vectormap.label.LabelTextBuilder
 import com.project.climbing.domain.model.DifficultyLevel
 import com.project.climbing.domain.model.Gym
+import com.project.climbing.presentation.component.ClimbingPrimaryButton
 import android.graphics.Color as AndroidColor
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun GymDetailScreen(
     onBackClick: () -> Unit,
+    onAddRecordClick: (String) -> Unit,
     viewModel: GymDetailViewModel = hiltViewModel(),
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -82,6 +84,23 @@ fun GymDetailScreen(
                     }
                 },
             )
+        },
+        bottomBar = {
+            if (!uiState.isLoading && uiState.gym != null) {
+                Box(
+                    modifier =
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(16.dp),
+                ) {
+                    ClimbingPrimaryButton(
+                        text = "기록 추가하기",
+                        onClick = {
+                            uiState.gym?.id?.let { onAddRecordClick(it) }
+                        },
+                    )
+                }
+            }
         },
     ) { paddingValues ->
         Box(

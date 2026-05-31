@@ -180,3 +180,35 @@ docs/gemini.md 파일에 너의 코딩 규칙에 대해서 작성해뒀어
         * AndroidView를 사용하여 Compose 내부에 MapView를 배치했습니다.
         * 해당 암장의 좌표를 중심으로 카메라가 이동하고, 암장 이름이 표시된 마커(Label)가 찍히도록 구현했습니다.
         * 지도 하단에 실제 위도/경도 정보를 텍스트로 표시하여 가시성을 높였습니다.
+
+기록 기능 구현
+
+1. 도메인 모델 및 인터페이스 정의:
+    * Record: 기록 정보를 담는 데이터 클래스(id, userId, gymId, gymName, date, difficulty, memo)를 domain/model/Record.kt에 생성
+    * Difficulty: 앱 전역에서 사용할 공통 난이도 Enum을 domain/model/Difficulty.kt에 정의
+    * RecordRepository: 기록 조회 및 추가/삭제를 위한 인터페이스 정의
+2. 가짜 데이터 저장소 구현:
+    * FakeRecordRepository: 초기 테스트를 위한 가짜 기록 데이터를 포함하여 구현
+3. 의존성 주입 설정:
+    * RepositoryModule: RecordRepository를 FakeRecordRepository로 바인딩
+4. 기록 목록 화면 구현:
+    * RecordUiState: 기록 목록 상태 관리 필드 추가
+    * RecordViewModel: RecordRepository를 통해 데이터를 구독하고 UI 상태 업데이트
+    * RecordScreen: LazyColumn과 ClimbingCard를 사용하여 내 기록 목록을 리스트로 표시. 각 기록에는 암장 이름, 날짜, 난이도 색상 칩, 메모 포함
+5. 상세 페이지 연동:
+    * GymDetailScreen: 하단에 '기록 추가하기' 버튼을 추가하여 기록 기능으로의 진입점 마련
+
+1. 기록 추가 화면 (RecordAddScreen) 구현
+    * 사용자가 암장의 난이도를 시각적으로 선택할 수 있는 가로 스크롤 형태의 선택기를 구현했습니다.
+    * 기록에 남길 메모를 입력할 수 있는 입력 폼을 추가했습니다.
+    * Detekt 규칙을 준수하기 위해 화면을 기능별 컴포저블(TopBar, Form, Section 등)로 세분화하여 코드 품질을 높였습니다.
+
+2. 비즈니스 로직 및 연동
+    * RecordAddViewModel: SavedStateHandle을 통해 전달받은 gymId로 암장 정보를 불러오고, 사용자가 입력한 데이터를 RecordRepository에 저장하는 로직을
+        담당합니다.
+    * 데이터 저장 시 실제 DB가 없어도 FakeRecordRepository의 메모리에 즉시 반영되어, 저장 후 '기록' 탭으로 가면 방금 추가한 항목을 바로 확인할 수 있습니다.
+
+3. 네비게이션 설정 업데이트
+    * Route.kt: RecordAdd(gymId: String) 경로를 새롭게 추가했습니다.
+    * AppNavGraph.kt: 암장 상세 페이지에서 '기록 추가하기' 버튼 클릭 시 RecordAdd 화면으로 이동하고, 저장 성공 시 이전 화면으로 돌아오도록 흐름을
+        구성했습니다.

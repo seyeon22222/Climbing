@@ -11,6 +11,7 @@ import com.project.climbing.presentation.home.HomeScreen
 import com.project.climbing.presentation.login.LoginScreen
 import com.project.climbing.presentation.profile.ProfileScreen
 import com.project.climbing.presentation.record.RecordScreen
+import com.project.climbing.presentation.record.add.RecordAddScreen
 
 @Composable
 fun AppNavGraph(
@@ -40,9 +41,22 @@ fun AppNavGraph(
                 },
             )
         }
-        composable<Route.GymDetail> {
+        composable<Route.GymDetail> { backStackEntry ->
             GymDetailScreen(
                 onBackClick = {
+                    navController.popBackStack()
+                },
+                onAddRecordClick = { gymId ->
+                    navController.navigate(Route.RecordAdd(gymId))
+                },
+            )
+        }
+        composable<Route.RecordAdd> {
+            RecordAddScreen(
+                onBackClick = {
+                    navController.popBackStack()
+                },
+                onSaveSuccess = {
                     navController.popBackStack()
                 },
             )
