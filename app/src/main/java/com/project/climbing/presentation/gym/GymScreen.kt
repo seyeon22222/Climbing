@@ -1,7 +1,9 @@
 package com.project.climbing.presentation.gym
 
 import GymUiState
+import android.graphics.Color as AndroidColor
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -36,10 +38,12 @@ import coil.compose.AsyncImage
 import com.project.climbing.domain.model.Gym
 import com.project.climbing.presentation.component.ClimbingCard
 import kotlinx.coroutines.flow.StateFlow
-import android.graphics.Color as AndroidColor
 
 @Composable
-fun GymScreen(viewModel: GymViewModel = hiltViewModel()) {
+fun GymScreen(
+    onGymClick: (String) -> Unit,
+    viewModel: GymViewModel = hiltViewModel(),
+) {
     val uiStateFlow: StateFlow<GymUiState> = viewModel.uiState
     val uiState by uiStateFlow.collectAsStateWithLifecycle()
 
@@ -81,7 +85,10 @@ fun GymScreen(viewModel: GymViewModel = hiltViewModel()) {
                     verticalArrangement = Arrangement.spacedBy(16.dp),
                 ) {
                     items(uiState.gyms) { gym ->
-                        GymItem(gym = gym)
+                        GymItem(
+                            gym = gym,
+                            onClick = { onGymClick(gym.id) },
+                        )
                     }
                 }
             }
@@ -92,10 +99,13 @@ fun GymScreen(viewModel: GymViewModel = hiltViewModel()) {
 @Composable
 fun GymItem(
     gym: Gym,
+    onClick: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
     ClimbingCard(
-        modifier = modifier.fillMaxWidth(),
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = onClick),
     ) {
         Row(
             modifier = Modifier.fillMaxWidth(),
